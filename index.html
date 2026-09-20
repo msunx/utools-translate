@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="color-scheme" content="light dark">
+  <title>AI 翻译</title>
+  <link rel="icon" href="logo.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <script src="shared.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><img src="logo.png" alt="" width="28" height="28"><h1>AI 翻译</h1></div>
+      <button id="settingsButton" class="quiet-button" type="button" aria-label="打开模型设置">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></svg><span>模型设置</span>
+      </button>
+      <button id="backButton" class="quiet-button" type="button" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18"/></svg>返回翻译
+      </button>
+    </header>
+
+    <main id="translatePage">
+      <section class="provider-bar" aria-label="翻译平台">
+        <div class="segmented" role="group" aria-label="选择翻译平台">
+          <button class="provider-button" data-provider="glm" type="button" aria-pressed="true">智谱 GLM</button>
+          <button class="provider-button" data-provider="deepseek" type="button" aria-pressed="false">DeepSeek</button>
+        </div>
+        <span id="modelLabel" class="model-label"></span>
+      </section>
+
+      <div id="setupHint" class="setup-hint" hidden><span id="setupText">填写 API Key，开始第一次翻译。</span><button id="setupButton" type="button">去配置<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></div>
+      <div id="previewHint" class="preview-hint" hidden>当前是浏览器预览。请在 uTools 中加载插件后配置密钥并翻译。</div>
+
+      <section id="fallbackInput" class="fallback-input" hidden>
+        <label for="sourceText">待翻译文本</label>
+        <textarea id="sourceText" placeholder="输入或粘贴要翻译的内容…" spellcheck="false" aria-describedby="charCount"></textarea>
+      </section>
+      <section class="source-summary" aria-label="待翻译的原文">
+        <div class="source-tools">
+          <span id="inputHint">在 uTools 顶部输入文本，按 Enter 翻译</span>
+          <div class="source-actions">
+            <button id="pasteButton" class="text-button" type="button">粘贴</button>
+            <button id="clearButton" class="text-button" type="button">清空</button>
+          </div>
+        </div>
+        <p id="sourcePreview" class="source-preview" hidden></p>
+        <div id="sourceEmpty" class="source-empty">输入一句话，让语言靠近一点。</div>
+      </section>
+      <section class="translation-workspace" aria-label="翻译结果">
+        <div class="pane-toolbar">
+          <div class="result-heading"><h2>译文</h2><span class="language-divider" aria-hidden="true"></span>
+            <label for="targetLanguage" class="visually-hidden">目标语言</label>
+            <select id="targetLanguage" aria-label="目标语言"></select>
+          </div>
+          <button id="copyButton" class="text-button" type="button" disabled>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V3H3v13h5"/></svg>复制译文
+          </button>
+        </div>
+        <div class="result-body">
+          <div id="emptyResult" class="empty-result"><img src="logo.png" width="64" height="64" alt=""><p id="emptyResultTitle">等一句想翻译的话</p><span id="emptyResultHint">在顶部输入，译文会显示在这里</span></div>
+          <textarea id="resultText" class="result-text" readonly aria-label="译文" hidden></textarea>
+        </div>
+        <div class="pane-footer"><span id="resultMeta">保留原文格式与段落</span><span id="charCount">0 / 20,000</span></div>
+      </section>
+      <footer class="actionbar">
+        <div id="status" class="status" role="status" aria-live="polite">准备就绪</div>
+        <div class="primary-action"><span id="shortcutHint" class="shortcut-hint">Enter</span><button id="translateButton" class="primary-button" type="button">翻译<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="cancelButton" class="stop-button" type="button" hidden>停止翻译</button></div>
+      </footer>
+    </main>
+
+    <main id="settingsPage" hidden>
+      <div class="settings-heading"><h2>连接你的翻译模型</h2><p>配置任意一个平台即可开始，两个平台的密钥独立保存。</p></div>
+      <form id="settingsForm" autocomplete="off">
+        <div id="providerSettings" class="provider-settings"></div>
+        <p class="storage-note">密钥由 uTools 加密存储；备份与同步遵循 uTools 设置。翻译时，原文直接发送给所选平台，不保存翻译历史。</p>
+        <div class="settings-actions"><p id="settingsStatus" role="status" aria-live="polite"></p><button id="saveButton" class="primary-button" type="submit">保存设置</button></div>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

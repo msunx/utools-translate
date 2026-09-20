@@ -1,0 +1,35 @@
+{
+  "main": "index.html",
+  "logo": "logo-utools.png",
+  "preload": "preload.js",
+  "pluginSetting": {
+    "single": true,
+    "height": 560
+  },
+  "features": [
+    {
+      "code": "translate",
+      "explain": "使用智谱 GLM 或 DeepSeek 翻译文本",
+      "cmds": [
+        "AI翻译",
+        "tr",
+        "AI Translate",
+        {
+          "type": "over",
+          "label": "AI翻译",
+          "minLength": 1,
+          "maxLength": 20000
+        }
+      ],
+      "icon": "logo-utools.png"
+    },
+    {
+      "code": "settings",
+      "explain": "配置翻译模型和 API Key",
+      "cmds": [
+        "AI翻译设置"
+      ],
+      "icon": "logo-utools.png"
+    }
+  ]
+}
