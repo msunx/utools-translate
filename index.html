@@ -25,10 +25,7 @@
 
     <main id="translatePage">
       <section class="provider-bar" aria-label="翻译平台">
-        <div class="segmented" role="group" aria-label="选择翻译平台">
-          <button class="provider-button" data-provider="glm" type="button" aria-pressed="true">智谱 GLM</button>
-          <button class="provider-button" data-provider="deepseek" type="button" aria-pressed="false">DeepSeek</button>
-        </div>
+        <span class="provider-name">DeepSeek</span>
         <span id="modelLabel" class="model-label"></span>
       </section>
 
@@ -73,10 +70,10 @@
     </main>
 
     <main id="settingsPage" hidden>
-      <div class="settings-heading"><h2>连接你的翻译模型</h2><p>配置任意一个平台即可开始，两个平台的密钥独立保存。</p></div>
+      <div class="settings-heading"><h2>连接 DeepSeek</h2><p>配置模型和 API Key，即可开始翻译。</p></div>
       <form id="settingsForm" autocomplete="off">
         <div id="providerSettings" class="provider-settings"></div>
-        <p class="storage-note">密钥由 uTools 加密存储；备份与同步遵循 uTools 设置。翻译时，原文直接发送给所选平台，不保存翻译历史。</p>
+        <p class="storage-note">密钥由 uTools 加密存储；备份与同步遵循 uTools 设置。翻译时，原文直接发送给 DeepSeek，不保存翻译历史。</p>
         <div class="settings-actions"><p id="settingsStatus" role="status" aria-live="polite"></p><button id="saveButton" class="primary-button" type="submit">保存设置</button></div>
       </form>
     </main>

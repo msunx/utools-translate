@@ -10,12 +10,16 @@ state.settings = emptySettings();
 function status(message, kind = '') { $('status').textContent = message; $('status').dataset.kind = kind; }
 function settingsStatus(message, kind = '') { $('settingsStatus').textContent = message; $('settingsStatus').dataset.kind = kind; }
 function submitKey() { return state.nativeInput ? 'Enter' : /Mac/i.test(navigator.platform) ? '⌘ Enter' : 'Ctrl Enter'; }
+function modelDisplay(providerId, model) {
+  const provider = cfg.providers[providerId];
+  return model === provider.defaultModel && provider.modelVersion ? `${model} · ${provider.modelVersion}` : model;
+}
 function refreshControls() {
   const selected = state.settings.provider;
   document.querySelectorAll('[data-provider]').forEach(button => { button.setAttribute('aria-pressed', String(button.dataset.provider === selected)); button.disabled = state.busy; });
   const account = state.settings.providers[selected];
-  $('modelLabel').textContent = account.model;
-  $('modelLabel').title = account.model;
+  $('modelLabel').textContent = modelDisplay(selected, account.model);
+  $('modelLabel').title = modelDisplay(selected, account.model);
   $('setupHint').hidden = !state.available || account.hasKey;
   $('setupText').textContent = `配置${cfg.providers[selected].name}的 API Key，即可开始翻译。`;
   $('translateButton').hidden = state.busy;
@@ -80,7 +84,7 @@ function buildSettings() {
     fieldset.className = 'provider-form';
     // The only interpolated strings below are static, bundled provider identifiers and names.
     fieldset.innerHTML = `<legend>${provider.name}</legend>
-      <div class="field"><label class="field-label" for="${id}Model">模型名称</label><input id="${id}Model" name="${id}Model" list="${id}Models" maxlength="160" required spellcheck="false" autocapitalize="off"><datalist id="${id}Models"></datalist><p class="field-hint">选择建议模型，或填写平台支持的模型 ID。</p></div>
+      <div class="field"><label class="field-label" for="${id}Model">模型名称</label><input id="${id}Model" name="${id}Model" list="${id}Models" maxlength="160" required spellcheck="false" autocapitalize="off"><datalist id="${id}Models"></datalist><p class="field-hint">${provider.modelNote || '选择建议模型，或填写平台支持的模型 ID。'}</p></div>
       <div class="field"><label class="field-label" for="${id}Key">API Key</label><div class="key-input-wrap"><input id="${id}Key" name="${id}Key" type="password" autocomplete="new-password" spellcheck="false" autocapitalize="off" maxlength="4096"><button id="${id}Reveal" type="button" class="text-button" aria-label="显示${provider.name}新输入的密钥" aria-pressed="false">显示</button></div>
       <div class="key-options"><button id="${id}KeyPage" class="key-link" type="button">获取 API Key</button><label class="delete-key" id="${id}ClearLabel"><input id="${id}Clear" type="checkbox">移除密钥</label></div><p id="${id}KeyHint" class="field-hint"></p></div>`;
     $('providerSettings').appendChild(fieldset);
@@ -93,7 +97,7 @@ function buildSettings() {
       $(`${id}Reveal`).setAttribute('aria-label', `${reveal ? '隐藏' : '显示'}${provider.name}新输入的密钥`);
     });
     $(`${id}KeyPage`).addEventListener('click', () => {
-      if (bridge) Promise.resolve(bridge.openKeyPage(id)).catch(() => settingsStatus('无法打开平台页面，请在浏览器访问平台控制台。', 'error'));
+      if (bridge) Promise.resolve(bridge.openKeyPage(id)).catch(() => settingsStatus('无法打开 DeepSeek 页面，请在浏览器访问 DeepSeek 控制台。', 'error'));
       else settingsStatus('请在 uTools 中配置密钥。');
     });
     $(`${id}Clear`).addEventListener('change', event => {
@@ -113,10 +117,10 @@ function fillSettings() {
     $(`${id}Reveal`).textContent = '显示';
     $(`${id}Reveal`).setAttribute('aria-pressed', 'false');
     $(`${id}Reveal`).setAttribute('aria-label', `显示${cfg.providers[id].name}新输入的密钥`);
-    $(`${id}Key`).placeholder = account.hasKey ? '已保存 · 留空则保持不变' : '粘贴平台提供的 API Key';
+    $(`${id}Key`).placeholder = account.hasKey ? '已保存 · 留空则保持不变' : '粘贴 DeepSeek API Key';
     $(`${id}Clear`).checked = false;
     $(`${id}ClearLabel`).hidden = !account.hasKey;
-    $(`${id}KeyHint`).textContent = account.hasKey ? '密钥已加密保存，可输入新密钥替换。' : '尚未配置。只需填写你要使用的平台。';
+    $(`${id}KeyHint`).textContent = account.hasKey ? '密钥已加密保存，可输入新密钥替换。' : '尚未配置 DeepSeek API Key。';
   }
   state.settingsDirty = false;
 }
@@ -156,7 +160,7 @@ async function translate() {
   showResult('');
   refreshControls();
   status('正在连接翻译模型…', 'loading');
-  $('resultMeta').textContent = `${cfg.providers[provider].name} · ${model}`;
+  $('resultMeta').textContent = `${cfg.providers[provider].name} · ${modelDisplay(provider, model)}`;
   try {
     const result = await bridge.translate({ provider, target, text: state.text }, event => {
       if (sequence !== state.sequence) return;
@@ -184,7 +188,7 @@ $('targetLanguage').value = state.settings.target;
 $('previewHint').hidden = Boolean(bridge);
 if (!bridge) refreshInputMode();
 refreshControls();
-if (state.available && !state.settings.providers[state.settings.provider].hasKey) status('先配置一个平台，即可开始。');
+if (state.available && !state.settings.providers[state.settings.provider].hasKey) status('先配置 DeepSeek，即可开始。');
 
 document.querySelectorAll('[data-provider]').forEach(button => button.addEventListener('click', () => {
   if (state.busy) return;

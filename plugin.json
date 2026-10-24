@@ -9,7 +9,7 @@
   "features": [
     {
       "code": "translate",
-      "explain": "使用智谱 GLM 或 DeepSeek 翻译文本",
+      "explain": "使用 DeepSeek 翻译文本",
       "cmds": [
         "AI翻译",
         "tr",

@@ -4,18 +4,14 @@
   if (typeof window === 'object') root.TranslatorConfig = value;
 })(typeof window === 'object' ? window : this, function () {
   const providers = {
-    glm: {
-      name: '智谱 GLM', endpoint: 'https://open.bigmodel.cn/api/paas/v4/chat/completions', defaultModel: 'glm-4.7-flash',
-      models: ['glm-4.7-flash', 'glm-4.7', 'glm-5.3', 'glm-5.2', 'glm-4.5-air'], keyUrl: 'https://bigmodel.cn/usercenter/proj-mgmt/apikeys'
-    },
     deepseek: {
       name: 'DeepSeek', endpoint: 'https://api.deepseek.com/chat/completions', defaultModel: 'deepseek-flash',
-      models: ['deepseek-flash', 'deepseek-v4-pro'], keyUrl: 'https://platform.deepseek.com/api_keys'
+      models: ['deepseek-flash'], modelVersion: 'V4.1-Flash-1017', modelNote: 'API 模型名 deepseek-flash 当前对应 DeepSeek-V4.1-Flash-1017', keyUrl: 'https://platform.deepseek.com/api_keys'
     }
   };
   const languages = { smart: '中英互译', 'zh-CN': '简体中文', 'zh-TW': '繁體中文', en: '英语', ja: '日语', ko: '韩语', fr: '法语', de: '德语', es: '西班牙语', ru: '俄语' };
   function defaults() {
-    return { provider: 'glm', target: 'smart', providers: Object.fromEntries(Object.entries(providers).map(([id, p]) => [id, { model: p.defaultModel, apiKey: '' }])) };
+    return { provider: 'deepseek', target: 'smart', providers: Object.fromEntries(Object.entries(providers).map(([id, p]) => [id, { model: p.defaultModel, apiKey: '' }])) };
   }
   function normalize(value) {
     const result = defaults();
